@@ -24,6 +24,7 @@ library
                      , parsec
                      , parsec-numbers
                      , mtl
+                     , containers
   default-language:    Haskell2010
 
 executable aoc17-exe
