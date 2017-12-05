@@ -29,11 +29,9 @@ baseTriangle = fmap baseTriangleRow [1..(getTriangleHeight 0)]
 carveTriangleRow :: [String] -> ((Integer, Integer), (Integer, Integer)) -> Integer -> String
 carveTriangleRow orig ((xLeft, yTop), (xRight, yBottom)) row
     | (row - 1) < carveStartRow || row > yBottom = origRow
-    | otherwise =    (slice origRow 0 xLeft) 
-                  ++ (slice origRow xLeft (xLeft + carvePadding + carveRowIndex - 1))
+    | otherwise = (slice origRow 0 (xLeft + carvePadding + carveRowIndex - 1))
                   ++ (duplicate "_" carveAmount)
-                  ++ (slice origRow (xRight - carvePadding - carveRowIndex + 1) (xRight + 1))
-                  ++ (slice origRow (xRight + 1) tWidth)
+                  ++ (slice origRow (xRight - carvePadding - carveRowIndex + 1) tWidth)
     where origRow = orig !! (fromIntegral row - 1)
           tHeight = toInteger $ length orig
           tWidth = toInteger $ length origRow
@@ -45,30 +43,47 @@ carveTriangleRow orig ((xLeft, yTop), (xRight, yBottom)) row
           carveAmount = (cWidth + 1) `quot` 2 + 1 - 2 * carveRowIndex          
 
 carveTriangle :: [String] -> (Integer, Integer) -> Integer -> [String]
-carveTriangle orig pos scale = fmap (carveTriangleRow orig (pos, (width, height))) [1 .. (toInteger $ length orig)]
+carveTriangle orig (x, y) scale = fmap (carveTriangleRow orig ((x, y), (x + width, y + height))) [1 .. (toInteger $ length orig)]
     where height = (getTriangleHeight scale)
           width  = (getTriangleWidth scale)
-          xstart = 0
-          ystart  = height `quot` 2
 
 getCarveStepPos :: Integer -> Integer -> (Integer, Integer)
-getCarveStepPos idx scale = (0, 0)
+-- getCarveStepPos idx scale = (0, 0)
+getCarveStepPos idx 0 = (0, 0)
+getCarveStepPos 1 1 = (16, 0)
+getCarveStepPos 2 1 = (0, 16)
+getCarveStepPos 3 1 = (32, 0)
+
+-- (0, 0) | (16, 0), (0, 16), (32, 16)
 
 carveFractalIteration :: Integer -> State [String] ()
-carveFractalIteration scale = forM_ [1..(3^scale)] $ \idx -> do
-                                  orig <- get
-                                  put $ carveTriangle orig (getCarveStepPos idx scale) scale
+carveFractalIteration scale = do
+    orig <- get
+    put $ carveTriangle orig (getCarveStepPos 1 scale) scale
+    -- forM_ [1..(3^scale)] $ \idx -> do
+    --                               orig <- get
+    --                               put $ carveTriangle orig (getCarveStepPos idx scale) scale
+
+carveFractalRecurse :: Integer -> Integer -> State [String] ()
+carveFractalRecurse toIter idx
+    | idx > toIter = return ()
+    | otherwise = do
+        carveFractalIteration idx
+        carveFractalRecurse toIter (idx + 1)
 
 carveFractal :: Integer -> State [String] ()
-carveFractal toIter = forM_ [0..toIter] $ carveFractalIteration
+carveFractal toIter = carveFractalRecurse toIter 0
 
 -- 0 1 3 9
 
 genFractal :: Integer -> [String]
 genFractal n = execState (carveFractal (n - 1)) baseTriangle --carveTriangle (genFractal 0) (0, 0) 0
 
+triangleRepr :: [String] -> String
+triangleRepr = foldr (\cur acc -> cur ++ "\n" ++ acc) ""
+
 genFractalRepr :: Integer -> String
-genFractalRepr iter = foldr (\cur acc -> cur ++ "\n" ++ acc) "" (genFractal iter)
+genFractalRepr iter = triangleRepr $ genFractal iter
 
 
 main :: IO ()

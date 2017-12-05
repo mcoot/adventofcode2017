@@ -25,6 +25,8 @@ library
                      , parsec-numbers
                      , mtl
                      , containers
+                     , vector
+                     , transformers
   default-language:    Haskell2010
 
 executable aoc17-exe
