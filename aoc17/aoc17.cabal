@@ -28,6 +28,7 @@ library
                      , vector
                      , transformers
                      , monad-loops
+                     , hashmap
   default-language:    Haskell2010
 
 executable aoc17-exe
