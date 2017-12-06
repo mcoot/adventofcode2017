@@ -27,6 +27,7 @@ library
                      , containers
                      , vector
                      , transformers
+                     , monad-loops
   default-language:    Haskell2010
 
 executable aoc17-exe
