@@ -1,6 +1,19 @@
-module Day1 where
+module Day1 (day1Solution) where
 
 import Data.Char
+
+import Solver
+
+main :: IO ()
+main = runSolver day1Solution "./data/day1.in"
+
+day1Solution :: Solution String Int
+day1Solution = Solution {
+    problemName = "Day 1",
+    solParser   = Just . id,
+    pt1Sol      = inverseCaptcha1,
+    pt2Sol      = inverseCaptcha2
+}
 
 isFurtherDigitTheSame :: String -> Int -> Int -> Bool
 isFurtherDigitTheSame str idx count = (str !! idx == str !! (mod (idx + count) (length str)))
@@ -16,9 +29,3 @@ inverseCaptcha1 str = inverseCaptcha str 1
 
 inverseCaptcha2 :: String -> Int
 inverseCaptcha2 str = inverseCaptcha str $ length str `quot` 2
-
-main :: IO ()
-main = do
-    inputData <- readFile "./data/day1.in"
-    putStrLn $ "The inverse captcha result for part 1 is " ++ (show $ inverseCaptcha1 inputData)
-    putStrLn $ "The inverse captcha result for part 2 is " ++ (show $ inverseCaptcha2 inputData)

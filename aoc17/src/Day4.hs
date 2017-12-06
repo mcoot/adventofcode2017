@@ -1,4 +1,4 @@
-module Day4 where
+module Day4 (day4Solution) where
 
 import Data.List
 import Data.Set (Set)
@@ -6,11 +6,18 @@ import qualified Data.Set as Set
 import Data.Map (Map)
 import qualified Data.Map as Map
 
+import Solver
+
 main :: IO ()
-main = do
-    inputData <- readFile "./data/day4.in"
-    putStrLn $ "Part 1: the input had " ++ (show $ countValidPassPhrases pt1Checker $ lines inputData) ++ " valid passphrases"
-    putStrLn $ "Part 2: the input had " ++ (show $ countValidPassPhrases pt2Checker $ lines inputData) ++ " valid passphrases"
+main = runSolver day4Solution "./data/day4.in"
+
+day4Solution :: Solution [String] Integer
+day4Solution = Solution {
+    problemName = "Day 4",
+    solParser   = Just . lines,
+    pt1Sol      = countValidPassPhrases pt1Checker,
+    pt2Sol      = countValidPassPhrases pt2Checker
+}
 
 countValidPassPhrases :: (String -> Bool) -> [String] -> Integer
 countValidPassPhrases f phrases = foldr (\cur acc -> acc + (if f cur then 1 else 0)) 0 phrases

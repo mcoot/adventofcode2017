@@ -1,9 +1,24 @@
-module Day2 where
+module Day2 (day2Solution) where
 
 import Text.Parsec
 import Text.Parsec.Combinator
 import Text.Parsec.String (Parser, parseFromFile)
 import Text.ParserCombinators.Parsec.Number
+
+import Solver
+
+testCase = [[5, 9, 2, 8], [9, 4, 7, 3], [3, 8, 6, 5]]
+
+main :: IO ()
+main = runSolver day2Solution "./data/day2.in"
+
+day2Solution :: Solution [[Integer]] Integer
+day2Solution = Solution {
+    problemName = "Day 2",
+    solParser   = parseInputMaybe parserInput,
+    pt1Sol      = checksum1,
+    pt2Sol      = checksum2
+}
 
 -- Parsing
 
@@ -29,16 +44,3 @@ checksum1 rows = sum $ ((\t -> fst t - snd t) . getMinAndMax) <$> rows
 
 checksum2 :: [[Integer]] -> Integer
 checksum2 rows = sum $ ((\t -> fst t `quot` snd t) . getDivisPair) <$> rows
-
--- Main
-
-testCase = [[5, 9, 2, 8], [9, 4, 7, 3], [3, 8, 6, 5]]
-
-main :: IO ()
-main = do
-    inputData <- parseFromFile parserInput "./data/day2.in"
-    case inputData of
-        Left _   -> putStrLn "Parsing failed"
-        Right rows -> do
-            putStrLn $ "Part 1 Checksum is " ++ (show $ checksum1 rows)
-            putStrLn $ "Part 2 Checksum is " ++ (show $ checksum2 rows)

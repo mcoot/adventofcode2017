@@ -1,6 +1,9 @@
-module Day3 where
+module Day3 (day3Solution) where
 
 import Control.Monad.State
+import Text.ParserCombinators.Parsec.Number
+
+import Solver
 
 -- Main
 
@@ -8,9 +11,15 @@ inputData :: Integer
 inputData = 277678
 
 main :: IO ()
-main = do
-    putStrLn $ "Part 1: Distance from " ++ (show inputData) ++ " is " ++ (show $ distanceToNum inputData)
-    putStrLn $ "Part 2: the first value written larger than " ++ (show inputData) ++ " is " ++ (show $ flip evalState [1] $ firstValLargerThan inputData)
+main = runSolver day3Solution "./data/day3.in"
+
+day3Solution :: Solution Integer Integer
+day3Solution = Solution {
+    problemName = "Day 3",
+    solParser   = parseInputMaybe int,
+    pt1Sol      = distanceToNum,
+    pt2Sol      = (flip evalState [1]) . firstValLargerThan
+}
 
 -- Data
 

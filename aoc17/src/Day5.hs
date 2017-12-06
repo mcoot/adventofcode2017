@@ -1,4 +1,4 @@
-module Day5 where
+module Day5 (day5Solution) where
 
 import Data.List
 import Control.Monad.State
@@ -10,6 +10,8 @@ import Text.Parsec.Combinator
 import Text.Parsec.String (Parser, parseFromFile)
 import Text.ParserCombinators.Parsec.Number
 
+import Solver
+
 data Execution = Execution {instructions :: V.Vector Integer, programCounter :: Integer}
     deriving (Show)
 
@@ -17,24 +19,25 @@ testInput :: [Integer]
 testInput = [0, 3, 0, 1, -3]
 
 main :: IO ()
-main = do
-    inputData <- parseFromFile parserInput "./data/day5.in"
-    case inputData of
-        Left _ -> putStrLn "Parsing failed"
-        Right d -> do
-            -- putStrLn $ show $ sum d
-            putStrLn $ "Part 1: It will take " ++ (show $ numStepsToEscapeNoState d (+1)) ++ " steps to escape"
-            putStrLn $ "Part 2: It will take " ++ (show $ numStepsToEscapeNoState d pt2UpdateFn) ++ " steps to escape"
+main = runSolver day5Solution "./data/day5.in"
+
+day5Solution :: Solution [Integer] Integer
+day5Solution = Solution {
+    problemName = "Day 5",
+    solParser   = parseInputMaybe inputParser,
+    pt1Sol      = numStepsToEscapeNoState succ,
+    pt2Sol      = numStepsToEscapeNoState pt2UpdateFn
+}
 
 -- Input parsing
 
-parserInput :: Parser [Integer]
-parserInput = int `sepBy` endOfLine
+inputParser :: Parser [Integer]
+inputParser = int `sepBy` endOfLine
 
 -- Implementation without using State
 
-numStepsToEscapeNoState :: [Integer] -> (Integer -> Integer) -> Integer
-numStepsToEscapeNoState prog updateFn = runProgram updateFn (Execution (V.fromList prog) 0)
+numStepsToEscapeNoState :: (Integer -> Integer) -> [Integer] -> Integer
+numStepsToEscapeNoState updateFn prog = runProgram updateFn (Execution (V.fromList prog) 0)
 
 runProgram :: (Integer -> Integer) -> Execution -> Integer
 runProgram updateFn = toInteger . length . unfoldr (runStep updateFn)
