@@ -29,6 +29,9 @@ library
                      , transformers
                      , monad-loops
                      , hashmap
+                     , pqueue
+                     , grid
+                     , megaparsec
   default-language:    Haskell2010
 
 executable aoc17-exe

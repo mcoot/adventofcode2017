@@ -8,6 +8,9 @@ import Day3
 import Day4
 import Day5
 import Day6
+import Day8
+import Day9
+import Day10
 
 main :: IO ()
 main = do
@@ -18,3 +21,6 @@ main = do
     runSolver day4Solution "../src/data/day4.in"
     runSolver day5Solution "../src/data/day5.in"
     runSolver day6Solution "../src/data/day6.in"
+    runSolver day8Solution "../src/data/day8.in"
+    runSolver day9Solution "../src/data/day9.in"
+    runSolver day10Solution "../src/data/day9.in"
