@@ -1,4 +1,4 @@
-module Day10 (day10Solution) where
+module Day10 (day10Solution, getHash) where
 
 import Text.Parsec hiding (State)
 import Text.Parsec.Combinator
@@ -41,7 +41,7 @@ execPart1 str = case parseInputMaybe part1Parser str of
 execPart2 :: String -> String
 execPart2 str = case parseInputMaybe part2Parser str of
                     Nothing -> "[Parsing failed]"
-                    Just r -> getHash (V.fromList [0..255]) (r ++ [17, 31, 73, 47, 23])
+                    Just r -> calcHash (V.fromList [0..255]) (r ++ [17, 31, 73, 47, 23])
 
 fstTriple :: (a, b, c) -> a
 fstTriple (x, _, _) = x
@@ -98,8 +98,13 @@ getCircularSlice vec idx n
 
 -- Part 2
 
-getHash :: Vector Integer -> [Integer] -> String
-getHash vec lengths = hexifyHash $ densifyHash $ V.toList $ roundRes
+getHash :: String -> String
+getHash str = case parseInputMaybe part2Parser str of
+                    Nothing -> ""
+                    Just r -> calcHash (V.fromList [0..255]) (r ++ [17, 31, 73, 47, 23])
+
+calcHash :: Vector Integer -> [Integer] -> String
+calcHash vec lengths = hexifyHash $ densifyHash $ V.toList $ roundRes
     where roundRes = getHashRecurse vec lengths (0, 0) 64
 
 getHashRecurse :: Vector Integer -> [Integer] -> (Integer, Integer) -> Integer -> Vector Integer

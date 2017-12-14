@@ -33,6 +33,7 @@ library
                      , grid
                      , megaparsec
                      , fgl
+                     , data-dword
   default-language:    Haskell2010
 
 executable aoc17-exe
