@@ -17,7 +17,7 @@ time a = do
     start <- getCPUTime
     res <- evaluate a
     end <- getCPUTime
-    let ms = (fromIntegral $ end - start) / (10^8)
+    let ms = (fromIntegral $ end - start) / (10^9)
     return (res, ms)
 
 solve :: Show b => Solution a b -> String -> IO ()
